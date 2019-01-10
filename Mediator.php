@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * 中介模式
+ *
+ * 从字面意思来理解，中介就是中间的媒介，起到一个中间沟通的过程，主要是解决了对象之间的相互依赖的问题，并不是完全的没有依赖，而是将依赖转移到了中介类上，由中介来协调，调度功能的实现，比如A、B两个类，都由C中介类来分配，A、B只需要关心自己能做什么，并且自己的修改只需要通知到中介C就可以了，C根据A、B能做的事情来进行调度，缺点也很明显，违背类开闭原则
+ *
+ * 参考 https://en.wikipedia.org/wiki/Mediator_pattern
+ */
+
+interface MediatorInterface
+{
+    // 下单
+    public function order();
+
+    // 退款
+    public function refund();
+}
+
+class Mediator implements MediatorInterface
+{
+    // 商家服务
+    protected $merchantService;
+
+    // 支付网关
+    protected $payGateway;
+
+    public function __construct(MerchantService $merchantService, PayGateway $payGateway)
+    {
+        $this->merchantService = $merchantService;
+
+        $this->payGateway = $payGateway;
+    }
+
+    public function order()
+    {
+        $this->merchantService->order();
+
+        $this->payGateway->order();
+
+        $this->merchantService->log('用户已下单');
+    }
+
+    public function refund()
+    {
+        $this->payGateway->refund();
+
+        $this->merchantService->updateStatus('已退款');
+    }
+
+}
+
+class MerchantService
+{
+    // 下单
+    public function order()
+    {
+
+    }
+
+    // 变更订单状态
+    public function updateStatus($status)
+    {
+
+    }
+
+    // 记录
+    public function log($message)
+    {
+
+    }
+}
+
+class PayGateway
+{
+    // 下单
+    public function order()
+    {
+
+    }
+
+    // 退款
+    public function refund()
+    {
+
+    }
+}
