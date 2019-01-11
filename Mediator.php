@@ -10,14 +10,20 @@
 
 interface MediatorInterface
 {
-    // 下单
-    public function order();
+    // 商户下单
+    public function merchantOrder();
 
-    // 退款
-    public function refund();
+    // 商户退款
+    public function merchantRefund();
+
+    // 网关下单
+    public function gatewayOrder();
+
+    // 网关退款
+    public function gatewayRefund();
 }
 
-class Mediator implements MediatorInterface
+class OrderMediator implements MediatorInterface
 {
     // 商家服务
     protected $merchantService;
@@ -32,30 +38,48 @@ class Mediator implements MediatorInterface
         $this->payGateway = $payGateway;
     }
 
-    public function order()
+    public function merchantOrder()
     {
         $this->merchantService->order();
-
-        $this->payGateway->order();
-
-        $this->merchantService->log('用户已下单');
     }
 
-    public function refund()
+    public function merchantRefund()
+    {
+        $this->merchantService->updateStatus('退款');
+
+        $this->merchantService->log('用户已退款');
+    }
+
+    public function gatewayOrder()
+    {
+        $this->payGateway->order();
+    }
+
+    public function gatewayRefund()
     {
         $this->payGateway->refund();
-
-        $this->merchantService->updateStatus('已退款');
     }
 
 }
 
-class MerchantService
+abstract class Colleague
+{
+    protected $mediator;
+
+    public function __construct(MediatorInterface $mediator)
+    {
+        $this->mediator = $mediator;
+    }
+}
+
+class MerchantService extends Colleague
 {
     // 下单
     public function order()
     {
+        $this->mediator->merchantOrder();
 
+        $this->mediator->gatewayOrder();
     }
 
     // 变更订单状态
@@ -71,7 +95,7 @@ class MerchantService
     }
 }
 
-class PayGateway
+class PayGateway extends Colleague
 {
     // 下单
     public function order()
@@ -82,6 +106,12 @@ class PayGateway
     // 退款
     public function refund()
     {
+        $this->mediator->gatewayRefund();
 
+        $this->mediator->merchantRefund();
     }
 }
+
+
+$orderMediator = new OrderMediator();
+
