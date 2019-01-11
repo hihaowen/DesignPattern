@@ -36,6 +36,10 @@ class OrderMediator implements MediatorInterface
         $this->merchantService = $merchantService;
 
         $this->payGateway = $payGateway;
+
+        $this->merchantService->setMediator($this);
+
+        $this->payGateway->setMediator($this);
     }
 
     public function merchantOrder()
@@ -66,7 +70,7 @@ abstract class Colleague
 {
     protected $mediator;
 
-    public function __construct(MediatorInterface $mediator)
+    public function setMediator(MediatorInterface $mediator)
     {
         $this->mediator = $mediator;
     }
@@ -112,6 +116,6 @@ class PayGateway extends Colleague
     }
 }
 
-
-$orderMediator = new OrderMediator();
-
+$orderMediator = new OrderMediator(new MerchantService(), new PayGateway());
+$orderMediator->merchantOrder();
+$orderMediator->merchantRefund();
