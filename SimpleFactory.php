@@ -38,7 +38,7 @@ class SimpleFactory
      * @return LanxunSmsSender|ZhizhenSmsSender
      * @throws Exception
      */
-    public static function send($platform)
+    public function createSender($platform)
     {
         switch ($platform) {
             case 'zhizhen' :
@@ -56,4 +56,4 @@ class SimpleFactory
     }
 }
 
-SimpleFactory::send('zhizhen')->send('12345', '67890');
+(new SimpleFactory())->createSender('zhizhen')->send('12345', '67890');
