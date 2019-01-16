@@ -1,114 +1,85 @@
 <?php
 
 /**
- * 组合模式
- *
- * 组合模式是一个树状的结构，便于添加和查看其中任意一个节点的信息
- *
- * 举个例子：我们的操作系统中的文件目录其实就是一个很形象的例子，比如目录中很可能还有目录，但是目录下面可能会包含文件、图片、也有可能还有视频，我们先一步一步的来看下，不着急一下子就用到组合模式
- *
- * 假设我们有个病毒扫描软件，需要扫描指定目录内的所有文件
+ * 模式名称: 组合模式 (Composite)
+ * 模式类型: 结构型
+ * 模式描述: 官方说法: 在软件工程中，复合模式是一种分区设计模式。复合模式描述了一组对象，这些对象的处理方式与同一类型对象的单个实例相同。组合的目的是将对象“组合”到树结构中，以表示部分整体层次结构。实现复合模式允许客户机统一地处理单个对象和组合
+ * 解决的问题: 解决树状结构、并且单节点和整体模型属于同一类型，并且可以进行完全遍历
+ * 优点:
+ * 缺点:
  */
 
-// 文本文件
-class TextFile
+// 定义共同类型
+interface HtmlElement
 {
-    private $fileName;
+    public function render() : string;
+}
 
-    public function __construct($fileName)
+// 定义Form，Form可以包含同类元素：文本、input框
+class Form implements HtmlElement
+{
+    protected $elements = [];
+
+    public function render() : string
     {
-        $this->fileName = $fileName;
+        $form = '<form>' . PHP_EOL;
+
+        foreach ($this->elements as $element)
+        {
+            $form .= $element->render() . PHP_EOL;
+        }
+
+        $form .= '</form>' . PHP_EOL;
+
+        return $form;
     }
 
-    public function killViruses()
+    public function addElement(HtmlElement $element)
     {
-        echo '正在查杀文件: ', $this->fileName, ' ...', PHP_EOL;
+        $this->elements[] = $element;
     }
 }
 
-// 图片文件
-class ImageFile
+// 文本
+class Text implements HtmlElement
 {
-    private $fileName;
+    protected $content = '';
 
-    public function __construct($fileName)
+    public function __construct($content)
     {
-        $this->fileName = $fileName;
+        $this->content = $content . PHP_EOL;
     }
 
-    public function killViruses()
+    public function render() : string
     {
-        echo '正在查杀图片: ', $this->fileName, ' ...', PHP_EOL;
+        return $this->content;
     }
 }
 
-// 目录
-class Catalog
+// Input
+class Input implements HtmlElement
 {
-    private $name;
+    protected $inputName;
 
-    private $textFiles = [];
-
-    private $imageFiles = [];
-
-    private $catalogs = [];
-
-    public function __construct($name)
+    public function __construct($inputName)
     {
-        $this->name = $name;
+        $this->inputName = $inputName;
     }
 
-    public function addTextFIle(TextFile $file)
+    public function render() : string
     {
-        $this->textFiles[] = $file;
-    }
-
-    public function addImageFile(ImageFile $file)
-    {
-        $this->imageFiles[] = $file;
-    }
-
-    public function addCatalog(Catalog $catalog)
-    {
-        $this->catalogs[] = $catalog;
-    }
-
-    public function killViruses()
-    {
-        echo '查杀目录: ' . $this->name, PHP_EOL;
-
-        // 递归查杀目录
-        foreach ($this->catalogs as $catalog) {
-            $catalog->killViruses();
-        }
-
-        // 查杀文本文件
-        foreach ($this->textFiles as $textFile) {
-            $textFile->killViruses();
-        }
-
-        // 查杀图片文件
-        foreach ($this->imageFiles as $imageFile) {
-            $imageFile->killViruses();
-        }
+        return '<input type="text" name="' . $this->inputName . '" />' . PHP_EOL;
     }
 }
 
+$form = new Form();
+$form->addElement(new Text('username:'));
+$form->addElement(new Input('username'));
+$form->addElement(new Text('password:'));
+$form->addElement(new Input('password'));
 
-// 代码测试
-$catalog = new Catalog('根目录');
-$catalog1 = new Catalog('根目录 - 目录1');
-$catalog2 = new Catalog('根目录 - 目录1 - 目录2');
+$nestedForm = new Form();
+$nestedForm->addElement(new Input('submit'));
 
-$imageFile = new ImageFile('图片1');
-$textFile = new TextFile('文本1');
-
-$catalog2->addImageFile($imageFile);
-$catalog2->addTextFIle($textFile);
-
-$catalog1->addTextFIle($textFile);
-$catalog1->addCatalog($catalog2);
-
-$catalog->addCatalog($catalog1);
-
-$catalog->killViruses();
+$form->addElement($nestedForm);
+echo $form->render();
