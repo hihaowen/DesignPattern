@@ -8,6 +8,7 @@
  * 优点: 对象与对象之间完全解耦
  * 缺点: 1、访问者可以利用被调用者进行重复的调用，导致死循环 2、被调用方被访问者使用时能使用的功能是相对固定的
  * 和它类似的模式: 状态模式中也有利用到这个特性，但是状态模式要更加复杂
+ * 参考: http://m.imooc.com/article/details?article_id=17847
  */
 
 interface VisitorInterface
