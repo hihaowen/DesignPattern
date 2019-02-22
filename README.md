@@ -4,11 +4,11 @@
 
 > 参考文档:
 
->> https://designpatternsphp.readthedocs.io/zh_CN/latest/
+> https://designpatternsphp.readthedocs.io/zh_CN/latest/
 
->> https://github.com/domnikl/DesignPatternsPHP
+> https://github.com/domnikl/DesignPatternsPHP
 
->> https://laravelacademy.org/category/design-patterns
+> https://laravelacademy.org/category/design-patterns
 
 > 自己的实现记录在 https://github.com/hihaowen/DesignPattern
 
