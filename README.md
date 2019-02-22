@@ -2,15 +2,15 @@
 
 设计模式主要有几个大类,除了经典的GOF 23个模式以外,还有其它后续出现的很多,主要分为: 结构型、创建型、行为型、其它类 四大类,在这里记录下自己的学习过程
 
-> 参考文档:
+```
+参考文档:
 
-> https://designpatternsphp.readthedocs.io/zh_CN/latest/
+https://designpatternsphp.readthedocs.io/zh_CN/latest/
 
-> https://github.com/domnikl/DesignPatternsPHP
+https://github.com/domnikl/DesignPatternsPHP
 
-> https://laravelacademy.org/category/design-patterns
-
-> 自己的实现记录在 https://github.com/hihaowen/DesignPattern
+https://laravelacademy.org/category/design-patterns
+```
 
 ## 行为型:
 中介者
